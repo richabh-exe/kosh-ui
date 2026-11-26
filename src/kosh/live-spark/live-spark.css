@@ -1,0 +1,100 @@
+/*
+ * Live Spark. The slide is a Motion spring in live-spark.tsx. The vertical
+ * rescale and the dot's height are useSpringValue springs. All of them only
+ * write `transform`.
+ * Theme hooks: --k-spark-stroke (line thickness), --k-spark-dot (dot size).
+ */
+
+.k-spark {
+  position: relative;
+  width: 100%;
+  color: var(--k-tone, var(--k-ink));
+  /* Clip exactly at the left edge, where old points leave, and leave a
+   * little room elsewhere for the dot and the line's thickness. */
+  clip-path: inset(-6px -6px -6px 0);
+}
+
+/* The track is as wide as the box. Points sit at fixed places along it
+ * (and beyond it), and the track slides left to bring new ones into view. */
+.k-spark__wipe,
+.k-spark__wipe-inner,
+.k-spark__track,
+.k-spark__rail {
+  position: absolute;
+  inset: 0;
+}
+.k-spark svg {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  overflow: visible;
+}
+.k-spark path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--k-spark-stroke, 1.5px);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  /* The SVG is stretched to fit, and its group is stretched again when the
+   * range changes. This keeps the line the same thickness regardless. */
+  vector-effect: non-scaling-stroke;
+}
+
+/* The rail is the full height of the box and is moved down by a share of
+ * that height. The dot sits at its top edge, so the dot's height on screen
+ * is set by a transform, not by `top`. */
+.k-spark__rail {
+  pointer-events: none;
+}
+.k-spark__dot {
+  --size: var(--k-spark-dot, 8px);
+  position: absolute;
+  top: 0;
+  width: var(--size);
+  height: var(--size);
+  margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
+  border-radius: 50%;
+  background: var(--k-signal);
+}
+.k-spark__dot[data-new] {
+  animation: k-spark-dot var(--k-dur-pop) var(--k-ease-out);
+}
+/* At reduced the dot only fades in: the scale terms are multiplied away. */
+@keyframes k-spark-dot {
+  from {
+    opacity: 0;
+    transform: scale(calc(1 - 0.6 * var(--k-move)));
+  }
+  60% {
+    transform: scale(calc(1 + 0.3 * var(--k-move)));
+  }
+}
+
+/* ---- Optional entrance (the `enter` prop) ----------------------------------
+ * A left-to-right reveal with no cover and no clip animation. The outer box
+ * starts one width to the left and slides home. The inner box starts one
+ * width to the right and slides home at the same rate, so the line itself
+ * never moves. The outer box clips what is outside it: the visible part
+ * grows from the left edge. Two transforms, nothing repainted. */
+.k-spark__wipe {
+  clip-path: inset(-6px -6px -6px 0);
+}
+.k-spark[data-enter="armed"] .k-spark__wipe {
+  opacity: 0;
+}
+.k-spark[data-enter="in"] .k-spark__wipe {
+  animation: k-spark-wipe-out var(--k-dur-enter) var(--k-ease-in-out);
+}
+.k-spark[data-enter="in"] .k-spark__wipe-inner {
+  animation: k-spark-wipe-in var(--k-dur-enter) var(--k-ease-in-out);
+}
+@keyframes k-spark-wipe-out {
+  from {
+    transform: translateX(-101%);
+  }
+}
+@keyframes k-spark-wipe-in {
+  from {
+    transform: translateX(101%);
+  }
+}

@@ -1,0 +1,12 @@
+# dependencies
+/node_modules
+
+# registry build output (pnpm registry:build)
+/public/r
+
+# typescript
+*.tsbuildinfo
+
+# misc
+.DS_Store
+.env*

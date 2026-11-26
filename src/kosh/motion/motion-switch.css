@@ -1,0 +1,64 @@
+/* <MotionSwitch>: a three-way segmented control. Plain CSS, no Tailwind. */
+
+.k-switch {
+  --k-switch-index: 0;
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 3px;
+  border: 1px solid var(--k-line-strong);
+  border-radius: var(--k-radius-pill);
+  background: var(--k-surface);
+  font: 500 0.8125rem/1 var(--k-font-ui, system-ui, sans-serif);
+  isolation: isolate;
+}
+
+/* Before React hydrates, place the thumb from <html data-motion>, which the
+ * inline <MotionScript> has already set. No flash of the wrong option. */
+[data-motion="reduced"] .k-switch:not([data-ready]) {
+  --k-switch-index: 1;
+}
+[data-motion="none"] .k-switch:not([data-ready]) {
+  --k-switch-index: 2;
+}
+
+.k-switch__thumb {
+  position: absolute;
+  z-index: -1;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc((100% - 6px) / 3);
+  border-radius: var(--k-radius-pill);
+  background: var(--k-ink);
+  transform: translateX(calc(var(--k-switch-index) * 100%));
+  /* Duration times --k-move: the thumb slides at full and jumps otherwise. */
+  transition: transform calc(var(--k-dur-slide) * var(--k-move))
+    var(--k-spring-slide);
+}
+
+.k-switch__option {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--k-radius-pill);
+  color: var(--k-ink-2);
+  font: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.k-switch__option[aria-checked="true"] {
+  color: var(--k-canvas);
+}
+
+.k-switch__option[aria-disabled="true"] {
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.k-switch__option:focus-visible {
+  outline: 2px solid var(--k-ink);
+  outline-offset: 3px;
+}

@@ -1,0 +1,120 @@
+/*
+ * Fill Ring. The arc's spring runs in fill-ring.tsx (useSpringValue) and
+ * writes two rotations. This file is the geometry and the goal burst.
+ * Theme hooks: --k-ring-track, plus --k-ring-size and --k-ring-thickness
+ * (set by the `size` and `thickness` props).
+ */
+
+.k-ring {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  /* size × size is reserved before anything is drawn */
+  width: var(--k-ring-size);
+  height: var(--k-ring-size);
+}
+
+.k-ring__track,
+.k-ring__arc,
+.k-ring__burst {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.k-ring__track {
+  border: var(--k-ring-thickness) solid var(--k-ring-track, var(--k-line));
+}
+
+/* Each half is a window onto one side of the ring. Inside it sits a ring
+ * coloured on the opposite side, so at 0° nothing shows. Turning it
+ * clockwise brings the colour into view: first down the right side from
+ * 12 o'clock, then up the left side from 6 o'clock. The windows overlap by
+ * half a pixel so no hairline shows where they meet. */
+.k-ring__half {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 0 calc(50% - 0.5px));
+}
+.k-ring__half--second {
+  clip-path: inset(0 calc(50% - 0.5px) 0 0);
+}
+.k-ring__arc {
+  border: var(--k-ring-thickness) solid var(--k-tone, var(--k-ink));
+  clip-path: inset(0 50% 0 0);
+}
+.k-ring__half--second .k-ring__arc {
+  clip-path: inset(0 0 0 50%);
+}
+
+.k-ring__center {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.2em;
+  font-size: calc(var(--k-ring-size) * 0.26);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.k-ring__label {
+  font-size: max(10px, calc(var(--k-ring-size) * 0.09));
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--k-ink-2);
+}
+
+/* ---- Goal reached: one small pop and a ring that leaves ----------------- */
+
+.k-ring[data-burst="0"] {
+  animation: k-ring-pop-a var(--k-dur-pop) var(--k-ease-out) 250ms;
+}
+.k-ring[data-burst="1"] {
+  animation: k-ring-pop-b var(--k-dur-pop) var(--k-ease-out) 250ms;
+}
+@keyframes k-ring-pop-a {
+  45% {
+    transform: scale(calc(1 + 0.06 * var(--k-move)));
+  }
+}
+@keyframes k-ring-pop-b {
+  45% {
+    transform: scale(calc(1 + 0.06 * var(--k-move)));
+  }
+}
+.k-ring__burst {
+  box-shadow: 0 0 0 2px var(--k-signal);
+  opacity: 0;
+  pointer-events: none;
+  animation: k-ring-burst var(--k-dur-ripple) var(--k-ease-out) 250ms;
+}
+/* With --k-move at 0 the ring fades where it stands. */
+@keyframes k-ring-burst {
+  from {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(calc(1 + 0.35 * var(--k-move)));
+  }
+}
+
+/* ---- Round caps (the default) -----------------------------------------------
+ * A cap is a dot as wide as the ring, sitting on the ring at 12 o'clock.
+ * One stays there (the start of the arc). The other sits in a wrapper that
+ * the spring turns to the arc's end. Still only `transform`. */
+.k-ring__head {
+  position: absolute;
+  inset: 0;
+}
+.k-ring__cap {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: var(--k-ring-thickness);
+  height: var(--k-ring-thickness);
+  margin-left: calc(var(--k-ring-thickness) / -2);
+  border-radius: 50%;
+  background: var(--k-tone, var(--k-ink));
+}

@@ -1,0 +1,132 @@
+/*
+ * Flow Number. CSS layer: transitions and keyframes on transform and opacity.
+ *
+ * Two conventions, shared by every Kosh component:
+ *  1. The base style is the final state. Keyframes describe how to arrive.
+ *  2. Movement is multiplied by --k-move (1 at full, 0 at reduced and none).
+ *
+ * Theme hooks: --k-flow-up, --k-flow-down (the flash colours).
+ */
+
+.k-flow {
+  display: inline-block;
+  color: var(--k-tone, currentColor);
+  font-variant-numeric: lining-nums tabular-nums;
+  white-space: nowrap;
+}
+
+/* The colour a changed digit flashes: signal when the number rose, muted
+ * when it fell. Under 24px, set --k-flow-up to var(--k-signal-deep): the
+ * plain signal colour is only 3:1 on a light canvas. */
+.k-flow[data-trend="up"] {
+  --k-flow-flash: var(--k-flow-up, var(--k-signal));
+}
+.k-flow[data-trend="down"] {
+  --k-flow-flash: var(--k-flow-down, var(--k-ink-3));
+}
+
+.k-flow__row {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  line-height: 1.12;
+}
+.k-flow__slot {
+  display: inline-block;
+  height: 1.12em; /* one line of the reel: the slot never changes size */
+  overflow: clip;
+}
+.k-flow__reel {
+  position: relative;
+  display: block;
+  /* Duration × --k-move: rolls at full, swaps at reduced. A transition also
+   * restarts from wherever the reel is, which is what makes it interruptible. */
+  transition: transform calc(var(--k-dur-roll) * var(--k-move))
+    var(--k-ease-out);
+}
+.k-flow__reel::before,
+.k-flow__reel::after {
+  content: attr(data-reel);
+  display: block;
+  white-space: pre;
+  text-align: center;
+}
+/* The trend-coloured copy, resting invisible on top of the resting copy. */
+.k-flow__reel::after {
+  position: absolute;
+  inset: 0;
+  color: var(--k-flow-flash, currentColor);
+  opacity: 0;
+}
+
+/* On a change the two copies swap, then cool back over 2.4 s. This runs at
+ * reduced too: it is opacity only, and there it is the whole cue.
+ * Two identical pairs (a and b) exist so alternating restarts the animation. */
+.k-flow__reel[data-flash="0"]::before {
+  animation: k-flow-rest-a var(--k-dur-cool) var(--k-ease-in-out);
+}
+.k-flow__reel[data-flash="0"]::after {
+  animation: k-flow-flash-a var(--k-dur-cool) var(--k-ease-in-out);
+}
+.k-flow__reel[data-flash="1"]::before {
+  animation: k-flow-rest-b var(--k-dur-cool) var(--k-ease-in-out);
+}
+.k-flow__reel[data-flash="1"]::after {
+  animation: k-flow-flash-b var(--k-dur-cool) var(--k-ease-in-out);
+}
+@keyframes k-flow-rest-a {
+  0%,
+  45% {
+    opacity: 0;
+  }
+}
+@keyframes k-flow-rest-b {
+  0%,
+  45% {
+    opacity: 0;
+  }
+}
+@keyframes k-flow-flash-a {
+  0%,
+  45% {
+    opacity: 1;
+  }
+}
+@keyframes k-flow-flash-b {
+  0%,
+  45% {
+    opacity: 1;
+  }
+}
+
+/* At "none" nothing can fade. The digits that changed in the latest update
+ * keep the trend colour until the next one: direction is information, and
+ * switching motion off should not switch information off. */
+.k-flow[data-motion="none"] .k-flow__reel[data-fresh]::before {
+  opacity: 0;
+}
+.k-flow[data-motion="none"] .k-flow__reel[data-fresh]::after {
+  opacity: 1;
+}
+
+/* Characters that left when the number lost a place (1,000 → 999). The
+ * anchor has no width, so nothing shifts. The text hangs to its left, where
+ * those characters stood, and fades out. */
+.k-flow__gone {
+  position: relative;
+  width: 0;
+  height: 1.12em;
+}
+.k-flow__gone > span {
+  position: absolute;
+  right: 0;
+  top: 0;
+  white-space: pre;
+  opacity: 0;
+  animation: k-flow-gone var(--k-dur-fast) linear;
+}
+@keyframes k-flow-gone {
+  from {
+    opacity: 1;
+  }
+}

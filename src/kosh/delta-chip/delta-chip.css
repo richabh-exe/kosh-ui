@@ -1,0 +1,80 @@
+/*
+ * Delta Chip. CSS layer.
+ * Theme hooks: --k-delta-warm, --k-delta-cool (the two backgrounds) and
+ * --k-delta-warm-ink, --k-delta-cool-ink (the text on each).
+ */
+
+.k-delta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.45em 0.8em;
+  border: 1px solid var(--k-line-strong);
+  border-radius: var(--k-radius-pill);
+  color: var(--k-tone, var(--k-ink));
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  isolation: isolate;
+
+  /* Inside the chip, direction is the arrow's job. The digits still roll,
+   * but they do not flash: "the size went up" would contradict "down 4%". */
+  --k-flow-up: currentColor;
+  --k-flow-down: currentColor;
+}
+
+/* Two stacked backgrounds. Changing direction cross-fades them with opacity,
+ * which the compositor can do without repainting. `background-color` cannot. */
+.k-delta::before,
+.k-delta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity var(--k-dur-fade) linear;
+}
+.k-delta::before {
+  background: var(
+    --k-delta-warm,
+    color-mix(in srgb, var(--k-signal) 26%, var(--k-surface))
+  );
+}
+.k-delta::after {
+  background: var(
+    --k-delta-cool,
+    color-mix(in srgb, var(--k-ink) 9%, var(--k-surface))
+  );
+}
+.k-delta[data-mood="warm"]::before,
+.k-delta[data-mood="cool"]::after {
+  opacity: 1;
+}
+
+/* The text follows the direction too. It switches at once: animating
+ * `color` cannot be done on the compositor, and the backgrounds behind it
+ * already carry the cross-fade. Both are 5:1 or better on their background. */
+.k-delta[data-mood="warm"] {
+  --k-tone: var(--k-delta-warm-ink, var(--k-signal-deep));
+}
+.k-delta[data-mood="cool"] {
+  --k-tone: var(--k-delta-cool-ink, var(--k-ink-2));
+}
+
+.k-delta__arrow {
+  flex: none;
+  /* Rotation is movement, so its duration is multiplied by --k-move. Opacity
+   * (to and from flat) is not. A transition restarts from the current angle,
+   * so a trend that flips back mid-turn simply turns back. */
+  transition:
+    transform calc(var(--k-dur-fade) * var(--k-move)) var(--k-spring-pop),
+    opacity var(--k-dur-fast) linear;
+}
+.k-delta[data-trend="down"] .k-delta__arrow {
+  transform: rotate(180deg);
+}
+.k-delta[data-trend="flat"] .k-delta__arrow {
+  opacity: 0;
+}

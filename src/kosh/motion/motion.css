@@ -1,0 +1,33 @@
+/*
+ * The motion switch, in plain CSS.
+ *
+ * <KoshProvider> writes the resolved level to <html data-motion="...">, and
+ * each component writes its own resolved level to its root element. A calmer
+ * ancestor always wins, because these rules only ever take motion away.
+ *
+ *   full     no rule here: components animate as written
+ *   reduced  --k-move: 0, so nothing travels or scales; fades still run
+ *   none     no animation and no transition at all: the final state, at once
+ */
+
+[data-motion="reduced"],
+[data-motion="none"] {
+  --k-move: 0;
+}
+
+/* Without JavaScript there is no data-motion attribute, so follow the
+ * operating system directly. With JavaScript this agrees with the hook. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --k-move: 0;
+  }
+}
+
+[data-motion="none"],
+[data-motion="none"] *,
+[data-motion="none"] *::before,
+[data-motion="none"] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}

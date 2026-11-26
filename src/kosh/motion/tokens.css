@@ -1,0 +1,183 @@
+/*
+ * Kosh design and motion tokens.
+ *
+ * Everything a component needs to look and move like Kosh is a CSS custom
+ * property here, so components work in plain CSS as well as in React, and a
+ * project can re-theme them by overriding these variables on any ancestor.
+ * The TypeScript mirror for Motion (springs, durations in seconds) lives in
+ * tokens.ts. Keep the two files in step.
+ */
+
+:root {
+  /* ---- Colour -------------------------------------------------------- */
+  --k-canvas: #f4f5f2; /* page background: cool and quiet */
+  --k-surface: #ffffff; /* raised surface: previews, code, controls */
+  --k-ink: #20241f; /* text and data */
+  --k-ink-2: #596153; /* secondary text, 6.1:1 on canvas */
+  --k-ink-3: #6c7366; /* quiet text and marks, 4.6:1 on canvas */
+  --k-line: #d7dad2;
+  --k-line-strong: #b5bcb0;
+
+  --k-lilac: #dcd7f2; /* stages and expressive data fields */
+  --k-lilac-deep: #75668e; /* data marks drawn on lilac */
+
+  /* Signal is the only accent. It marks the thing that just changed. */
+  --k-signal: #f15b35; /* fills, marks, and text of 24px or larger */
+  --k-signal-deep: #a52b12; /* small accent text on light surfaces, 6.5:1 */
+
+  --k-night: #20241f; /* dark sections */
+  --k-night-raised: #2c312a;
+  --k-night-ink: #f4f5f2;
+  --k-night-ink-2: #b9c0b2;
+  --k-night-line: rgb(244 245 242 / 0.18);
+
+  /* Data intensity ramp, used by heatmaps (level 1 to 4) */
+  --k-level-1: #c5bde3;
+  --k-level-2: #a89bcf;
+  --k-level-3: #82729f;
+  --k-level-4: #4f405f;
+
+  /* ---- Shape and space ---------------------------------------------- */
+  --k-radius-xs: 2px;
+  --k-radius-sm: 4px;
+  --k-radius-md: 8px;
+  --k-radius-lg: 20px; /* stages */
+  --k-radius-pill: 999px;
+
+  --k-space-1: 0.25rem;
+  --k-space-2: 0.5rem;
+  --k-space-3: 0.75rem;
+  --k-space-4: 1rem;
+  --k-space-6: 1.5rem;
+  --k-space-8: 2rem;
+  --k-space-12: 3rem;
+  --k-space-16: 4rem;
+  --k-space-24: 6rem;
+
+  /* ---- Durations ------------------------------------------------------
+   * Updates stay between 150 and 400 ms. Only entrances may run longer. */
+  --k-dur-fast: 150ms; /* hover, press, small state flips */
+  --k-dur-fade: 240ms; /* opacity and colour cross-fades */
+  --k-dur-roll: 300ms; /* one digit rolling */
+  --k-dur-pop: 320ms; /* a cell or mark popping */
+  --k-dur-slide: 380ms; /* reordering, rows making room */
+  --k-dur-spring: 400ms; /* length of the linear() springs below */
+  --k-dur-ripple: 600ms; /* ring leaving a mark */
+  --k-dur-enter: 700ms; /* theatrical entrance */
+  --k-dur-cool: 2400ms; /* signal cooling back to ink */
+
+  /* ---- Easings -------------------------------------------------------- */
+  --k-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --k-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --k-ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Springs sampled into linear(), so plain CSS transitions can overshoot.
+   * Each matches a preset in tokens.ts: same stiffness, damping and mass. */
+  --k-spring-pop: linear(
+    0,
+    0.129,
+    0.39,
+    0.663,
+    0.882,
+    1.024,
+    1.094,
+    1.111,
+    1.095,
+    1.066,
+    1.036,
+    1.012,
+    0.997,
+    0.989,
+    0.988,
+    0.99,
+    0.993,
+    0.996,
+    0.999,
+    1,
+    1
+  );
+  --k-spring-settle: linear(
+    0,
+    0.078,
+    0.23,
+    0.393,
+    0.539,
+    0.66,
+    0.755,
+    0.826,
+    0.878,
+    0.916,
+    0.943,
+    0.961,
+    0.974,
+    0.983,
+    0.989,
+    0.993,
+    0.995,
+    0.997,
+    0.998,
+    0.999,
+    1
+  );
+  --k-spring-slide: linear(
+    0,
+    0.059,
+    0.182,
+    0.324,
+    0.462,
+    0.585,
+    0.687,
+    0.769,
+    0.833,
+    0.882,
+    0.918,
+    0.944,
+    0.963,
+    0.976,
+    0.985,
+    0.991,
+    0.995,
+    0.997,
+    0.999,
+    1,
+    1
+  );
+
+  /* ---- The movement multiplier ----------------------------------------
+   * 1 = things may move. 0 = nothing moves (reduced and none).
+   * Multiply every distance, scale delta and transform duration by it:
+   *
+   *   transform: scale(calc(1 + 0.28 * var(--k-move)));
+   *   transition: transform calc(var(--k-dur-roll) * var(--k-move));
+   *
+   * motion.css sets it to 0. Nothing ever sets it back to 1, which is how
+   * "the calmest setting wins" holds in CSS too. */
+  --k-move: 1;
+}
+
+/* ---- Tone ---------------------------------------------------------------
+ * Every component takes a `tone` prop and writes it as data-tone on its
+ * root. Components draw their data with var(--k-tone). */
+[data-tone="ink"] {
+  --k-tone: var(--k-ink);
+}
+[data-tone="signal"] {
+  --k-tone: var(--k-signal);
+}
+[data-tone="muted"] {
+  --k-tone: var(--k-ink-2);
+}
+
+/* Text for screen readers only. Components use it to say in words what
+ * their animated, aria-hidden parts show. */
+.k-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

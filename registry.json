@@ -1,0 +1,174 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "kosh",
+  "homepage": "https://kosh-hazel.vercel.app",
+  "items": [
+    {
+      "name": "motion-core",
+      "type": "registry:lib",
+      "title": "Motion core",
+      "description": "The Kosh motion switch: design and motion tokens, KoshProvider, the useMotionLevel, useSpringValue and useEntrance hooks, MotionSwitch and the CSS data-motion rules. Every Kosh component depends on it.",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "src/kosh/motion/types.ts",
+          "type": "registry:file",
+          "target": "kosh/motion/types.ts"
+        },
+        {
+          "path": "src/kosh/motion/tokens.ts",
+          "type": "registry:file",
+          "target": "kosh/motion/tokens.ts"
+        },
+        {
+          "path": "src/kosh/motion/tokens.css",
+          "type": "registry:file",
+          "target": "kosh/motion/tokens.css"
+        },
+        {
+          "path": "src/kosh/motion/motion.css",
+          "type": "registry:file",
+          "target": "kosh/motion/motion.css"
+        },
+        {
+          "path": "src/kosh/motion/use-reduced-motion.ts",
+          "type": "registry:file",
+          "target": "kosh/motion/use-reduced-motion.ts"
+        },
+        {
+          "path": "src/kosh/motion/use-motion-level.ts",
+          "type": "registry:file",
+          "target": "kosh/motion/use-motion-level.ts"
+        },
+        {
+          "path": "src/kosh/motion/preference-store.ts",
+          "type": "registry:file",
+          "target": "kosh/motion/preference-store.ts"
+        },
+        {
+          "path": "src/kosh/motion/features.ts",
+          "type": "registry:file",
+          "target": "kosh/motion/features.ts"
+        },
+        {
+          "path": "src/kosh/motion/motion-script.tsx",
+          "type": "registry:file",
+          "target": "kosh/motion/motion-script.tsx"
+        },
+        {
+          "path": "src/kosh/motion/kosh-provider.tsx",
+          "type": "registry:file",
+          "target": "kosh/motion/kosh-provider.tsx"
+        },
+        {
+          "path": "src/kosh/motion/motion-switch.tsx",
+          "type": "registry:file",
+          "target": "kosh/motion/motion-switch.tsx"
+        },
+        {
+          "path": "src/kosh/motion/motion-switch.css",
+          "type": "registry:file",
+          "target": "kosh/motion/motion-switch.css"
+        },
+        {
+          "path": "src/kosh/motion/use-spring-value.ts",
+          "type": "registry:file",
+          "target": "kosh/motion/use-spring-value.ts"
+        },
+        {
+          "path": "src/kosh/motion/use-entrance.ts",
+          "type": "registry:file",
+          "target": "kosh/motion/use-entrance.ts"
+        },
+        {
+          "path": "src/kosh/motion/motion-ready.ts",
+          "type": "registry:file",
+          "target": "kosh/motion/motion-ready.ts"
+        },
+        {
+          "path": "src/kosh/motion/index.ts",
+          "type": "registry:file",
+          "target": "kosh/motion/index.ts"
+        }
+      ],
+      "docs": "Import tokens.css and motion.css once in your global stylesheet. Import motion-switch.css when using MotionSwitch. Render <MotionScript /> in <head> and wrap your app in <KoshProvider motion=\"auto\">."
+    },
+    {
+      "name": "flow-number",
+      "type": "registry:component",
+      "title": "Flow Number",
+      "description": "A number that changes. Only the digits that changed roll, and they flash the signal colour when the number rose, a muted colour when it fell.",
+      "registryDependencies": ["@kosh/motion-core"],
+      "files": [
+        {
+          "path": "src/kosh/flow-number/flow-number.tsx",
+          "type": "registry:file",
+          "target": "kosh/flow-number/flow-number.tsx"
+        },
+        {
+          "path": "src/kosh/flow-number/flow-number.css",
+          "type": "registry:file",
+          "target": "kosh/flow-number/flow-number.css"
+        }
+      ]
+    },
+    {
+      "name": "delta-chip",
+      "type": "registry:component",
+      "title": "Delta Chip",
+      "description": "A chip for a signed change. When the direction reverses, the arrow turns over and the background cross-fades.",
+      "registryDependencies": ["@kosh/motion-core", "@kosh/flow-number"],
+      "files": [
+        {
+          "path": "src/kosh/delta-chip/delta-chip.tsx",
+          "type": "registry:file",
+          "target": "kosh/delta-chip/delta-chip.tsx"
+        },
+        {
+          "path": "src/kosh/delta-chip/delta-chip.css",
+          "type": "registry:file",
+          "target": "kosh/delta-chip/delta-chip.css"
+        }
+      ]
+    },
+    {
+      "name": "fill-ring",
+      "type": "registry:component",
+      "title": "Fill Ring",
+      "description": "Progress toward a goal, as a ring. The arc fills with an overshoot and bursts once at the goal.",
+      "registryDependencies": ["@kosh/motion-core", "@kosh/flow-number"],
+      "files": [
+        {
+          "path": "src/kosh/fill-ring/fill-ring.tsx",
+          "type": "registry:file",
+          "target": "kosh/fill-ring/fill-ring.tsx"
+        },
+        {
+          "path": "src/kosh/fill-ring/fill-ring.css",
+          "type": "registry:file",
+          "target": "kosh/fill-ring/fill-ring.css"
+        }
+      ]
+    },
+    {
+      "name": "live-spark",
+      "type": "registry:component",
+      "title": "Live Spark",
+      "description": "A sparkline for a value that keeps arriving. A new point slides in and the line moves along.",
+      "dependencies": ["motion"],
+      "registryDependencies": ["@kosh/motion-core"],
+      "files": [
+        {
+          "path": "src/kosh/live-spark/live-spark.tsx",
+          "type": "registry:file",
+          "target": "kosh/live-spark/live-spark.tsx"
+        },
+        {
+          "path": "src/kosh/live-spark/live-spark.css",
+          "type": "registry:file",
+          "target": "kosh/live-spark/live-spark.css"
+        }
+      ]
+    }
+  ]
+}
