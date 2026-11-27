@@ -25,6 +25,11 @@
   --k-signal: #f15b35; /* fills, marks, and text of 24px or larger */
   --k-signal-deep: #a52b12; /* small accent text on light surfaces, 6.5:1 */
 
+  /* Gain and loss, for components that judge a change (Delta Chip). Green
+   * means it went the good way, red the bad way. Loss reuses signal. */
+  --k-gain: #2f8a5b; /* marks and tints, 3.9:1 on canvas */
+  --k-gain-deep: #1a6a3f; /* small text on a gain tint, 5:1 */
+
   --k-night: #20241f; /* dark sections */
   --k-night-raised: #2c312a;
   --k-night-ink: #f4f5f2;

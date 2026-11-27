@@ -44,10 +44,10 @@ export function DeltaChip({
   const level = useMotionLevel(motion);
   const size = Math.abs(data);
   const trend = size <= flatBelow ? "flat" : data > 0 ? "up" : "down";
-  // "warm" is the highlighted state. Normally that is up. With `invert`
-  // (down is good), it is down.
+  // Good (green) or bad (red). Normally up is good. With `invert` (down is
+  // good, as for errors or load time), down is.
   const mood =
-    trend === "flat" ? "flat" : (trend === "up") !== invert ? "warm" : "cool";
+    trend === "flat" ? "flat" : (trend === "up") !== invert ? "good" : "bad";
 
   const text = new Intl.NumberFormat(locale, format).format(size);
   const words =

@@ -1,7 +1,8 @@
 /*
  * Delta Chip. CSS layer.
- * Theme hooks: --k-delta-warm, --k-delta-cool (the two backgrounds) and
- * --k-delta-warm-ink, --k-delta-cool-ink (the text on each).
+ * Theme hooks: --k-delta-good, --k-delta-bad (the two backgrounds) and
+ * --k-delta-good-ink, --k-delta-bad-ink (the text on each).
+ * Good is green and bad is red. Up is good unless the chip has `invert`.
  */
 
 .k-delta {
@@ -38,29 +39,29 @@
 }
 .k-delta::before {
   background: var(
-    --k-delta-warm,
-    color-mix(in srgb, var(--k-signal) 26%, var(--k-surface))
+    --k-delta-good,
+    color-mix(in srgb, var(--k-gain) 22%, var(--k-surface))
   );
 }
 .k-delta::after {
   background: var(
-    --k-delta-cool,
-    color-mix(in srgb, var(--k-ink) 9%, var(--k-surface))
+    --k-delta-bad,
+    color-mix(in srgb, var(--k-signal) 26%, var(--k-surface))
   );
 }
-.k-delta[data-mood="warm"]::before,
-.k-delta[data-mood="cool"]::after {
+.k-delta[data-mood="good"]::before,
+.k-delta[data-mood="bad"]::after {
   opacity: 1;
 }
 
 /* The text follows the direction too. It switches at once: animating
  * `color` cannot be done on the compositor, and the backgrounds behind it
  * already carry the cross-fade. Both are 5:1 or better on their background. */
-.k-delta[data-mood="warm"] {
-  --k-tone: var(--k-delta-warm-ink, var(--k-signal-deep));
+.k-delta[data-mood="good"] {
+  --k-tone: var(--k-delta-good-ink, var(--k-gain-deep));
 }
-.k-delta[data-mood="cool"] {
-  --k-tone: var(--k-delta-cool-ink, var(--k-ink-2));
+.k-delta[data-mood="bad"] {
+  --k-tone: var(--k-delta-bad-ink, var(--k-signal-deep));
 }
 
 .k-delta__arrow {
